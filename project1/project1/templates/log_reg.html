@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block heading %}
+    <p></p>
+    Login {{ headline }}
+{% endblock %}
+
+{% block body %}
+    <form action="{{ url_for('login') }}" method="post">
+        <div class="form-group">
+            <label>Username:</label>
+            <input type="text" name="name" class="form-control" placeholder="Enter your username">
+        </div>
+        <div class="form-group">
+            <label>Password:</label>
+            <input type="password" name="password" class="form-control" placeholder="Enter your password">
+        </div>
+        <div>
+            <button type="submit" class="btn btn-default">Login</button>
+        </div>
+    </form>
+    <div>
+        Or
+    </div>
+    <p>
+        <a href="{{ url_for('registration') }}"><button type="button" class="btn btn-default">Register</button></a>
+    </p>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+
+{% block heading %}
+    <p></p>
+    Registration
+{% endblock %}
+
+{% block body %}
+    <form action="{{ url_for('registration_handler') }}" method="post">
+        <div class="form-group">
+            <label>Choose a username</label> <label class="text-danger">{{ taken }}</label>
+            <input type="text" name="name" class="form-control" placeholder="Choose your username">
+        </div>
+        <div class="form-group">
+            <label>Choose a password</label> <label class="text-danger">{{ passwd_error }}</label>
+            <input type="password" name="password" class="form-control" placeholder="Enter your password">
+        </div>
+        <div class="form-group">
+            <labe>Re-enter the chosen password</labe> <label class="text-danger">{{ passwd_diff }}</label>
+            <input type="password" name="re_password" class="form-control" placeholder="Re-enter your password">
+        </div>
+        <div class="form-group">
+            <label>Enter your email address</label> <label class="text-danger">{{ email_error }}</label>
+            <input type="email" name="email" class="form-control" placeholder="Enter your email">
+        </div>
+        <div class="form-group">
+            Pick one of the security questions
+            <select name="question_select" class="form-control">
+                <option value="city">Which city were you born in?</option>
+                <option value="name">What is the name of your pet?</option>
+                <option value="country">What is the first foreign country you have been to?</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Your answer to the security question</label> <label class="text-danger">{{ answer_error }}</label>
+            <input tyle="text" name="answer" class="form-control" placeholder="Your answer">
+        </div>
+        <div>
+            <button type="submit" class="btn btn-default">Register</button>
+        </div>
+    </form>
+    <div>
+        Already have an account?
+    </div>
+    <p>
+        <a href="{{ url_for('login_redirect') }}"><button type="button" class="btn btn-default">Login</button></a>
+    </p>
+{% endblock %}
