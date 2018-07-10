@@ -1,17 +1,11 @@
 {% extends "layout.html" %}
 
 {% block heading %}
-    First Page. Hello {{ headline }}
+     Hello {{ user }}
 {% endblock %}
 
 {% block body %}
-    <form action="{{ url_for('login') }}" method="post">
-        <input type="text" name="name" placeholder="Enter your username">
-        <input type="password" password="password" placeholder="Enter your password">
-        <button>Submit</button>
-    </form>
-    <!--<p>-->
-        <!--new paragraph-->
-    <!--</p>-->
-    <!--<a href="{{ url_for("search") }}">search</a>-->
+    <p>
+        login successful!
+    </p>
 {% endblock %}
