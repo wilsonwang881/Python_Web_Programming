@@ -4,10 +4,9 @@
 
 import os
 
-from flask import Flask, session, render_template, request
+from flask import Flask, session, render_template, request, redirect, url_for
 from flask_session import Session
 from sqlalchemy import create_engine
-from sqlalchemy.sql import select
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 app = Flask(__name__)
@@ -24,6 +23,7 @@ Session(app)
 # Set up database
 engine = create_engine(os.getenv("DATABASE_URL"))
 db = scoped_session(sessionmaker(bind=engine))
+connection = engine.connect()
 
 @app.route("/")
 def index():
@@ -60,11 +60,11 @@ def registration_handler():
             else:
                 question_number = 3
             answer = request.form["answer"]
-            query = db.execute("SELECT user_name FROM users WHERE user_name='{}'".format(username))
+            query = db.execute("SELECT user_name FROM users WHERE user_name=:username",{"username":username})
             username_results = []
             for row in query:
                 username_results.append(row[0])
-            query = db.execute("SELECT user_name FROM users WHERE user_email='{}'".format(email))
+            query = db.execute("SELECT user_name FROM users WHERE user_email=:email", {"email":email})
             email_results = []
             for row in query:
                 email_results.append(row[0])
@@ -103,7 +103,9 @@ def registration_handler():
                                        email_error=email_error,
                                        answer_error=answer_error)
             else:
-                db.execute("INSERT INTO users (user_password, user_email, security_question_number, security_question_answer, user_name) VALUES (\'{}\', \'{}\', {}, \'{}\', \'{}\')".format(password, email, question_number, answer, username))
+                db.execute("INSERT INTO users (user_password, user_email, security_question_number, security_question_answer, user_name) VALUES (:password, :email, :question_number, :answer, :username)",
+                           {"password":password, "email":email, "question_number":question_number, "answer":answer, "username":username})
+                db.commit()
                 return render_template("reg_succ.html", user=username)
 
 @app.route("/login_redirect")
@@ -117,12 +119,12 @@ def login():
     else:
         if session.get("user_id") is None:
             session["user_id"] = []
-            return render_template("index.html")
+            return render_template("log_reg.html")
         else:
             name = request.form["name"]
             password = request.form["password"]
             if name and password:
-                query = db.execute("SELECT user_password FROM users WHERE user_name=\'{}\'".format(name))
+                query = db.execute("SELECT user_password FROM users WHERE user_name=:name", {"name":name})
                 results = []
                 for row in query:
                     results.append(row[0])
@@ -135,22 +137,22 @@ def login():
 
 @app.route("/logout")
 def logout():
-    headline = "registration"
-    return render_template("index.html", headline=headline)
+    session.pop('user_id')
+    return redirect(url_for('login_redirect'))
 
 @app.route("/search")
 def search():
     headline = "search"
-    return render_template("index.html", headline=headline)
+    return render_template("log_reg.html", headline=headline)
 
-#########################
-# registration x
-# login -> functional
-# logout x
-# import
+##################################################
+# registration            -> functional
+# login                   -> functional
+# logout                  -> functional
+# import                  -> functional
 # search x
 # book page
 # review submission
 # goodreads review data
 # api access
-#########################
+##################################################
