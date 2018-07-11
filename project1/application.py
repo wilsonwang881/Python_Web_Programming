@@ -115,30 +115,30 @@ def login_redirect():
 @app.route("/login", methods=["POST", "GET"])
 def login():
     if request.method == "GET":
-        return "Try submitting data first"
+        return ("Try login first")
     else:
         if session.get("user_id") is None:
             session["user_id"] = []
-            return render_template("log_reg.html")
+        name = request.form["name"]
+        password = request.form["password"]
+        if name and password:
+            query = db.execute("SELECT user_password FROM users WHERE user_name=:name", {"name":name})
+            results = []
+            for row in query:
+                results.append(row[0])
+            session["user_id"].append(name)
+            print(session)
+            if results!=[] and results[0] == password:
+                return render_template("index.html", user=name)
+            else:
+                return render_template("log_reg.html", headline="Error!")
         else:
-            name = request.form["name"]
-            password = request.form["password"]
-            if name and password:
-                query = db.execute("SELECT user_password FROM users WHERE user_name=:name", {"name":name})
-                results = []
-                for row in query:
-                    results.append(row[0])
-                session["user_id"].append(name)
-                if results!=[] and results[0] == password:
-                    return render_template("index.html", user=name)
-                else:
-                    return render_template("log_reg.html", headline="Error!")
-            return render_template("log_reg.html", headline="")
+            return render_template("log_reg.html", headline="Enter something")
 
 @app.route("/logout")
 def logout():
     session.pop('user_id')
-    return redirect(url_for('login_redirect'))
+    return redirect("/")
 
 @app.route("/search")
 def search():
