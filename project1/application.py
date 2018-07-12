@@ -1,7 +1,3 @@
-# key: kdscrSYrjF3PxtfQQcVrQ
-# secret: qFW9Lmr42gAx8PLRzNSWUo8J4AW9VXcNaUXWZddU
-# https://www.goodreads.com/api/keys
-
 import os
 
 from flask import Flask, session, render_template, request, redirect, url_for
@@ -27,8 +23,10 @@ connection = engine.connect()
 
 @app.route("/")
 def index():
-    headline = ""
-    return render_template("log_reg.html", headline=headline)
+    if "user_id" in session:
+        return render_template("index.html", user=session["user_id"])
+    else:
+        return render_template("log_reg.html", headline="")
 
 @app.route("/registration")
 def registration():
@@ -129,21 +127,55 @@ def login():
             session["user_id"].append(name)
             print(session)
             if results!=[] and results[0] == password:
-                return render_template("index.html", user=name)
+                return redirect(url_for("user"))
             else:
                 return render_template("log_reg.html", headline="Error!")
         else:
             return render_template("log_reg.html", headline="Enter something")
 
+@app.route("/user")
+def user():
+    return render_template("index.html", user=session["user_id"])
+
+@app.route("/settings")
+def settings():
+    return render_template("settings.html", user=session["user_id"])
+
+@app.route("/update_username", methods=["POST", "GET"])
+def update_username():
+    current_user = session["user_id"]
+    return "OK"
+
+@app.route("/update_password", methods=["POST", "GET"])
+def update_password():
+    current_user = session["user_id"]
+    return "OK"
+
+@app.route("/update_email", methods=["POST", "GET"])
+def update_email():
+    current_user = session["user_id"]
+    return "OK"
+
 @app.route("/logout")
 def logout():
-    session.pop('user_id')
+    session.pop("user_id")
     return redirect("/")
 
 @app.route("/search")
 def search():
-    headline = "search"
-    return render_template("log_reg.html", headline=headline)
+    return render_template("search.html", user=session["user_id"])
+
+@app.route("/search_handler", methods=["POST", "GET"])
+def search_handler():
+    if request.method == "GET":
+        return ("search request must be submitted via form")
+    else:
+        info = request.form["info"]
+        info_regex = "*{}*".format(info)
+        res = db.execute("SELECT FROM import_books WHERE title=:title OR isbn=:ISBN OR author=:author",
+                         {"title":info_regex, "isbn":info_regex, "author":info_regex})
+        for item in res:
+            print(item[0])
 
 ##################################################
 # registration            -> functional
