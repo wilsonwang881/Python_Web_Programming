@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+
+{% block heading %}
+    <span class="navbar-text">
+        Hello {{ user }}
+    </span>
+    <nav class="navbar navbar-default">
+        <a href="#"><button class="btn btn-default">Home</button></a>
+        <a href="{{ url_for('search') }}"><button class="btn btn-default">Search&Write</button> </a>
+        <a href="{{ url_for('settings') }}"><button class="btn btn-default">Settings</button></a>
+        <a href="{{ url_for('logout') }}"><button class="btn btn-default" href="{{ url_for('logout') }}">Logout</button></a>
+    </nav>
+{% endblock %}
+
+{% block body %}
+    <form action="{{ url_for('update_username') }}" method="post">
+        <div class="form-group">
+            <input type="text" name="usrname" class="form-control" placeholder="New username...">
+            <p></p>
+            <button type="submit" class="btn btn-default">Update Username</button>
+        </div>
+    </form>
+    <form action="{{ url_for('update_password') }}" method="post">
+        <div class="form-group">
+            <input type="password" name="oldpasswd" class="form-control" placeholder="Old password">
+            <p></p>
+            <input type="password" name="newpasswd" class="form-control" placeholder="New password">
+            <p></p>
+            <input type="password" name="renewpasswd" class="form-control" placeholder="Re-enter new password">
+            <p></p>
+            <button type="submit" class="btn btn-default">Update Password</button>
+        </div>
+    </form>
+    <form action="{{ url_for('update_email') }}" method="post">
+        <div class="form-group">
+            <input type="text" name="email" class="form-control" placeholder="New email address">
+            <p></p>
+            <input type="text" name="reemail" class="form-control" placeholder="Re-enter the new email address">
+            <p></p>
+            <button type="submit" class="btn btn-default">Update Email</button>
+        </div>
+    </form>
+{% endblock %}

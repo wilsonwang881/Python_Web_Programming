@@ -6,9 +6,8 @@
     </span>
     <nav class="navbar navbar-default">
         <a href="#"><button class="btn btn-default">Home</button></a>
-        <a href="#"><button class="btn btn-default">Write</button></a>
-        <a href="{{ url_for('search') }}"><button class="btn btn-default">Search</button> </a>
-        <a href="#"><button class="btn btn-default">Settings</button></a>
+        <a href="{{ url_for('search') }}"><button class="btn btn-default">Search&Write</button> </a>
+        <a href="{{ url_for('settings') }}"><button class="btn btn-default">Settings</button></a>
         <a href="{{ url_for('logout') }}"><button class="btn btn-default" href="{{ url_for('logout') }}">Logout</button></a>
     </nav>
 {% endblock %}
@@ -16,7 +15,7 @@
 {% block body %}
     <form action="{{ url_for('search_handler') }}" method="post">
         <div class="form-group">
-            <input type="text" name="name" class="form-control" placeholder="Title, ISBN, author...">
+            <input type="text" name="info" class="form-control" placeholder="Title, ISBN, author...">
             <p></p>
             <button type="submit" class="btn btn-default">Search</button>
         </div>
