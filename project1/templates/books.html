@@ -14,10 +14,25 @@
 
 {% block body %}
     <p>Book Details</p>
+    {% for book in books %}
     <ul>
         <li>Name:  {{ book.title }}</li>
         <li>Author:  {{ book.author }}</li>
         <li>Year:  {{ book.year }}</li>
         <li>ISBN:  {{  book.isbn }}</li>
     </ul>
+    {% endfor %}
+    {% for review in reviews %}
+    <ul>
+        <li>Reviewer: {{ review.reviewer }}</li>
+        <li>Comment: {{ review.review_text }}</li>
+        <li>Rating: {{ review.rating }}</li>
+    </ul>
+    {% endfor %}
+    {% if notes %}
+    <div class="form-group">
+        <label for="comment">Add a comment:</label>
+        <textarea class="form-control" rows="5" id="comment"></textarea>
+    </div>
+    {% endif %}
 {% endblock %}
