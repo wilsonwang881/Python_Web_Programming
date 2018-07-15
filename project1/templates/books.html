@@ -13,4 +13,11 @@
 {% endblock %}
 
 {% block body %}
+    <p>Book Details</p>
+    <ul>
+        <li>Name:  {{ book.title }}</li>
+        <li>Author:  {{ book.author }}</li>
+        <li>Year:  {{ book.year }}</li>
+        <li>ISBN:  {{  book.isbn }}</li>
+    </ul>
 {% endblock %}

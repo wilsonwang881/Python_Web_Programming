@@ -13,4 +13,13 @@
 {% endblock %}
 
 {% block body %}
+    <p>Book Details</p>
+    {% for book in books %}
+    <ul>
+        <li>Name:  {{ book.title }}</li>
+        <li>Author:  {{ book.author }}</li>
+        <li>Year:  {{ book.year }}</li>
+        <li>ISBN:  {{  book.isbn }}</li>
+    </ul>
+    {% endfor %}
 {% endblock %}
