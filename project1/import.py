@@ -24,6 +24,7 @@ def main():
                    {"ISBN": isbn, "title":title, "author": author, "years": years})
         print("added {}".format(title))
     db.commit()
+    db.execute("DELETE FROM import_books WHERE isbn='isbn'")
     print("All books added")
 
 if __name__ == "__main__":

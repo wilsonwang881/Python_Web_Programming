@@ -135,11 +135,11 @@ def login():
 
 @app.route("/user")
 def user():
-    return render_template("index.html", user=session["user_id"])
+    return render_template("index.html", user=session["user_id"][0])
 
 @app.route("/settings")
 def settings():
-    return render_template("settings.html", user=session["user_id"])
+    return render_template("settings.html", user=session["user_id"][0])
 
 @app.route("/update_username", methods=["POST", "GET"])
 def update_username():
@@ -163,7 +163,7 @@ def logout():
 
 @app.route("/search")
 def search():
-    return render_template("search.html", user=session["user_id"])
+    return render_template("search.html", user=session["user_id"][0], books=None, nomatches=None)
 
 @app.route("/search_handler", methods=["POST", "GET"])
 def search_handler():
@@ -171,18 +171,30 @@ def search_handler():
         return ("search request must be submitted via form")
     else:
         info = request.form["info"]
-        info_regex = "*{}*".format(info)
-        res = db.execute("SELECT FROM import_books WHERE title=:title OR isbn=:ISBN OR author=:author",
-                         {"title":info_regex, "isbn":info_regex, "author":info_regex})
-        for item in res:
-            print(item[0])
+        info_regex = "%{}%".format(info)
+        res = db.execute("SELECT * FROM import_books WHERE title LIKE :title OR isbn LIKE :ISBN OR author LIKE :author",
+                         {"title":info_regex, "ISBN":info_regex, "author":info_regex}).fetchall()
+        if not res:
+            return render_template("search.html", user=session["user_id"][0], books=None, nomatches="Yes")
+        return render_template("search.html", user=session["user_id"][0], books=res, nomatches=None)
+
+@app.route("/books/<string:isbn>")
+def books(isbn):
+    res = db.execute("SELECT * FROM import_books WHERE isbn=:book_isbn", {"book_isbn":isbn})
+    if res is None:
+        return render_template("404.html", message="No such book found")
+    return render_template("books.html", book=res)
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html', message=None),404
 
 ##################################################
 # registration            -> functional
 # login                   -> functional
 # logout                  -> functional
 # import                  -> functional
-# search x
+# search                  -> functional
 # book page
 # review submission
 # goodreads review data
