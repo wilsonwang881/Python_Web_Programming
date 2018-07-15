@@ -178,12 +178,12 @@ def search_handler():
             return render_template("search.html", user=session["user_id"][0], books=None, nomatches="Yes")
         return render_template("search.html", user=session["user_id"][0], books=res, nomatches=None)
 
-@app.route("/books/<string:isbn>")
+@app.route("/books/<isbn>")
 def books(isbn):
     res = db.execute("SELECT * FROM import_books WHERE isbn=:book_isbn", {"book_isbn":isbn})
     if res is None:
         return render_template("404.html", message="No such book found")
-    return render_template("books.html", book=res)
+    return render_template("books.html", books=res)
 
 @app.errorhandler(404)
 def page_not_found(e):
